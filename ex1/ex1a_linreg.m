@@ -9,6 +9,8 @@
 % ''Hedonic prices and the demand for clean air''
 % J. Environ. Economics & Management, vol.5, 81-102, 1978.
 %
+clear 
+
 addpath ../common
 addpath ../common/minFunc_2012/minFunc
 addpath ../common/minFunc_2012/minFunc/compiled
@@ -42,10 +44,10 @@ theta = rand(n,1);
 % TODO:  Implement the linear regression objective and gradient computations
 % in linear_regression.m
 %
-tic;
-options = struct('MaxIter', 200);
-theta = minFunc(@linear_regression, theta, options, train.X, train.y);
-fprintf('Optimization took %f seconds.\n', toc);
+% tic;
+% options = struct('MaxIter', 200);
+% theta = minFunc(@linear_regression, theta, options, train.X, train.y);
+% fprintf('Optimization took %f seconds.\n', toc);
 
 % Run minFunc with linear_regression_vec.m as the objective.
 %
@@ -56,10 +58,11 @@ fprintf('Optimization took %f seconds.\n', toc);
 %
 % Uncomment the lines below to run your vectorized code.
 %Re-initialize parameters
-%theta = rand(n,1);
-%tic;
-%theta = minFunc(@linear_regression_vec, theta, options, train.X, train.y);
-%fprintf('Optimization took %f seconds.\n', toc);
+theta = rand(n,1);
+tic;
+options = struct('MaxIter', 200);
+theta = minFunc(@linear_regression_vec, theta, options, train.X, train.y);
+fprintf('Optimization took %f seconds.\n', toc);
 
 % Plot predicted prices and actual prices from training set.
 actual_prices = train.y;
