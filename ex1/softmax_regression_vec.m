@@ -17,6 +17,7 @@ function [f,g] = softmax_regression(theta, X,y)
   theta=reshape(theta, n, []);
   num_classes=size(theta,2)+1;
   
+  %num_classes=size(theta,2);
   % initialize objective value and gradient.
   f = 0;
   g = zeros(size(theta));
@@ -27,6 +28,41 @@ function [f,g] = softmax_regression(theta, X,y)
   %        Before returning g, make sure you form it back into a vector with g=g(:);
   %
 %%% YOUR CODE HERE %%%
+ 
+%   for i = 1:m
+%       if y(i) ~= 10
+%         f = f + theta(:,y(i))'* X(:,i);
+%       end
+%   end
+
+  % only use num_classes-1 columns, since the last column is always assumed 0
+  % exclude the effect of y(i) == 10
+  % tX = [theta,zeros(n,1)]'*X;
+  tX = theta'*X;
+  rot_tX = tX';
+  
+  I = sub2ind(size(rot_tX),1:size(rot_tX,1),y);
+  f = sum(rot_tX(I));
+  
+  % exlast_tX = exp(tX(1:end-1,:));
+  exlast_tX = exp(tX);
+  denominator = sum(exlast_tX,1);
+  
+  f = - f + sum(log(denominator));
+  
+%   for k = 1:num_classes-1
+%       temp = zeros(1,m);
+%       temp(y==k) = 1;
+%       
+%       g(:,k) = - X*(temp - bsxfun(@rdivide,exp(theta(:,k)'*X), denominator))';
+%   end
+  g = X * bsxfun(@rdivide, exlast_tX,denominator)';
+  
+  xy = zeros(m,num_classes);
+  idx = sub2ind(size(xy),1:size(xy,1),y);
+  xy(idx) = 1;
+  xy = xy(:,1:end-1);
+  
+  g = g - X*xy;
   
   g=g(:); % make gradient a vector for minFunc
-
